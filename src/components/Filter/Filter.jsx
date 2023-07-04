@@ -1,9 +1,14 @@
-import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { addFilter } from '../../redux/filter/slice';
 import { Label, FindInput } from './Filter.styled';
 
-const Filter = ({ filterHendler }) => {
+const Filter = () => {
+  const dispatch = useDispatch();
   const { filter } = useSelector(state => state.contacts);
+
+  const filterHendler = ({ currentTarget }) => {
+    dispatch(addFilter(currentTarget.value));
+  };
 
   return (
     <Label>
@@ -15,11 +20,6 @@ const Filter = ({ filterHendler }) => {
       ></FindInput>
     </Label>
   );
-};
-
-Filter.propTypes = {
-  filter: PropTypes.string,
-  filterHendler: PropTypes.func.isRequired,
 };
 
 export default Filter;

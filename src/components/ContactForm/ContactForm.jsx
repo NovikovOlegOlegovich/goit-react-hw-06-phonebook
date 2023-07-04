@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from '../../redux/contacts/slice';
+import Notiflix from 'notiflix';
 import { nanoid } from 'nanoid';
-import PropTypes from 'prop-types';
 import {
   PhonebookForm,
   NameInput,
@@ -8,9 +10,16 @@ import {
   FormButton,
 } from './ContactForm.styled';
 
-const ContactForm = ({ formSubmitHendler }) => {
+const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+
+  const { contacts } = useSelector(state => state.contacts);
+  const dispatch = useDispatch();
+
+  const checkUnicName = currentName => {
+    return contacts.find(contact => contact.name === currentName);
+  };
 
   const reset = () => {
     setName('');
@@ -19,12 +28,19 @@ const ContactForm = ({ formSubmitHendler }) => {
 
   const handleSubmit = event => {
     event.preventDefault();
+    if (checkUnicName(name)) {
+      Notiflix.Notify.warning(`${name} is already in contacts`);
+      return;
+    }
     const nameId = nanoid();
-    formSubmitHendler({
-      id: nameId,
-      name,
-      number,
-    });
+    dispatch(
+      addContact({
+        id: nameId,
+        name,
+        number,
+      })
+    );
+
     reset();
   };
 
@@ -62,10 +78,6 @@ const ContactForm = ({ formSubmitHendler }) => {
       <FormButton type="submit">Add contact</FormButton>
     </PhonebookForm>
   );
-};
-
-ContactForm.propTypes = {
-  formSubmitHendler: PropTypes.func.isRequired,
 };
 
 export default ContactForm;
