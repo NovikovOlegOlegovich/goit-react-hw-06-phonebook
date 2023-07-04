@@ -29,9 +29,9 @@ const ContactList = () => {
   return (
     <ContList>
       {visibleContacts?.map(contact => (
-        <ContactItem key={contact?.id}>
+        <ContactItem key={contact.id}>
           <ContactDeskription>
-            {contact?.name} : {contact?.number}
+            {contact.name} : {contact.number}
           </ContactDeskription>
           <ContactButton onClick={() => handledeleteContact(contact?.id)}>
             Delete
