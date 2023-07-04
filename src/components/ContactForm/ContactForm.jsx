@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from '../../redux/contacts/slice';
+import { getContacts } from '../../redux/contacts/selectors';
 import Notiflix from 'notiflix';
 import { nanoid } from 'nanoid';
 import {
@@ -14,7 +15,7 @@ const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
-  const { contacts } = useSelector(state => state.contacts);
+  const contacts = useSelector(getContacts);
   const dispatch = useDispatch();
 
   const checkUnicName = currentName => {
@@ -30,6 +31,7 @@ const ContactForm = () => {
     event.preventDefault();
     if (checkUnicName(name)) {
       Notiflix.Notify.warning(`${name} is already in contacts`);
+      reset();
       return;
     }
     const nameId = nanoid();
