@@ -1,33 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Notiflix from 'notiflix';
-import { Wrapper } from './App.styled';
 import ContactForm from '../ContactForm';
 import ContactList from '../ContactList';
 import Filter from '../Filter';
 import Title from '../Title';
+import { Wrapper } from './App.styled';
+import { addContact, deleteContact } from '../../redux/contacts/slice';
+import { addFilter } from '../../redux/filter/slice';
 
 const App = () => {
-  const [contacts, setContacts] = useState(() => {
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contacts);
-    if (!parsedContacts) {
-      return [];
-    }
-    return parsedContacts;
-  });
-  const [filter, setFilter] = useState('');
-
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
-
-  useEffect(() => {
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contacts);
-    if (parsedContacts) {
-      setContacts(parsedContacts);
-    }
-  }, []);
+  const dispatch = useDispatch();
+  const { contacts } = useSelector(state => state.contacts);
+  const { filter } = useSelector(state => state.filter);
 
   const checkUnicName = currentName => {
     return contacts.find(contact => contact.name === currentName);
@@ -39,24 +23,23 @@ const App = () => {
       Notiflix.Notify.warning(`${name} is already in contacts`);
       return;
     }
-    setContacts(prevState => [...prevState, data]);
+    dispatch(addContact(data));
   };
 
-  const filterHendler = event => {
-    const { value } = event.currentTarget;
-    setFilter(value);
+  const handledeleteContact = contactId => {
+    dispatch(deleteContact(contactId));
+  };
+
+  const filterHendler = ({ currentTarget }) => {
+    const filter = currentTarget.value;
+    dispatch(addFilter(filter));
   };
 
   const getVisibleContacts = () => {
     const normalizedFilter = filter.toLowerCase();
-    console.log(contacts);
     return contacts.filter(contact =>
       contact.name.toLowerCase().includes(normalizedFilter)
     );
-  };
-
-  const deleteContact = contactId => {
-    setContacts(contacts.filter(contact => contact.id !== contactId));
   };
 
   const visibleContacts = getVisibleContacts();
@@ -65,12 +48,11 @@ const App = () => {
     <Wrapper>
       <Title>Phonebook</Title>
       <ContactForm formSubmitHendler={formSubmitHendler} />
-
       <Title>Contacts</Title>
-      <Filter filter={filter} filterHendler={filterHendler} />
+      <Filter filterHendler={filterHendler} />
       <ContactList
         contacts={visibleContacts}
-        ondDeleteContact={deleteContact}
+        ondDeleteContact={handledeleteContact}
       />
     </Wrapper>
   );

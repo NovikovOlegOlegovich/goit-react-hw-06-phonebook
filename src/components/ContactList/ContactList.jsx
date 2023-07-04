@@ -9,12 +9,12 @@ import {
 const ContactList = ({ contacts, ondDeleteContact }) => {
   return (
     <ContList>
-      {contacts.map(contact => (
-        <ContactItem key={contact.id}>
+      {contacts?.map(contact => (
+        <ContactItem key={contact?.id}>
           <ContactDeskription>
-            {contact.name} : {contact.number}
+            {contact?.name} : {contact?.number}
           </ContactDeskription>
-          <ContactButton onClick={() => ondDeleteContact(contact.id)}>
+          <ContactButton onClick={() => ondDeleteContact(contact?.id)}>
             Delete
           </ContactButton>
         </ContactItem>

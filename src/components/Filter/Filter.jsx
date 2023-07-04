@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { Label, FindInput } from './Filter.styled';
 
-const Filter = ({ filter, filterHendler }) => {
+const Filter = ({ filterHendler }) => {
+  const { filter } = useSelector(state => state.contacts);
+
   return (
     <Label>
       Find contacts by name
@@ -15,7 +18,7 @@ const Filter = ({ filter, filterHendler }) => {
 };
 
 Filter.propTypes = {
-  filter: PropTypes.string.isRequired,
+  filter: PropTypes.string,
   filterHendler: PropTypes.func.isRequired,
 };
 
